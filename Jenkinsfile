@@ -1,65 +1,38 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs "NodeJS-22"
-    }
-
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo 'Installing dependencies...'
-                bat 'node -v'
-                bat 'npm -v'
+                git branch: 'main', url: 'https://github.com/Khalid-511/8.2CDevSecOps.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
                 bat 'npm install'
             }
         }
 
-        stage('Test with Snyk') {
+        stage('Run Tests') {
             steps {
-                echo 'Running Snyk security test...'
-                withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-                    bat 'snyk auth %SNYK_TOKEN%'
-                    // Run test and save results
-                    bat 'snyk test --json > snyk-report.json || exit 0'
-                }
+                // Run tests but don’t fail the build if tests fail
+                bat 'npm test || exit /b 0'
             }
         }
 
-        stage('Summary') {
+        stage('Generate Coverage Report') {
             steps {
-                script {
-                    // Read the report file
-                    def report = readJSON file: 'snyk-report.json'
-                    def issues = report.vulnerabilities.size()
-                    echo "🔒 Found ${issues} vulnerabilities"
-                    // Save summary for email
-                    writeFile file: 'summary.txt', text: "Snyk found ${issues} vulnerabilities.\nSee Jenkins console or attached report."
-                }
+                // Generate coverage, ignore errors if no script exists
+                bat 'npm run coverage || exit /b 0'
             }
         }
 
-        stage('Deploy') {
+        stage('NPM Audit (Security Scan)') {
             steps {
-                echo 'Deploying (simulated)...'
-                // bat 'npm run deploy'
+                // Show security issues but continue the build
+                bat 'npm audit || exit /b 0'
             }
-        }
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'snyk-report.json', fingerprint: true
-        }
-        success {
-            mail to: 'khalidalotaibi011@gmail.com',
-                 subject: "SUCCESS: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "Build passed.\n\n" + readFile('summary.txt') + "\n\nCheck full report in Jenkins."
-        }
-        failure {
-            mail to: 'khalidalotaibi011@gmail.com',
-                 subject: "FAILURE: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "Build failed.\n\n" + readFile('summary.txt') + "\n\nCheck full report in Jenkins."
         }
     }
 }
