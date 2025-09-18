@@ -8,6 +8,13 @@ pipeline {
             }
         }
 
+        stage('Check Node and NPM') {
+            steps {
+                bat 'node -v'
+                bat 'npm -v'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 bat 'npm install'
@@ -16,7 +23,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat 'npm test || exit 0'   // run tests but don’t fail pipeline if tests break
+                bat 'npm test || exit 0' // don’t fail pipeline if tests break
             }
         }
 
