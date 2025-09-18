@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS-22"   // configured in Jenkins
+        nodejs "NodeJS-22"   // NodeJS tool configured in Jenkins
     }
 
     stages {
@@ -16,14 +16,17 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo '✅ Skipping snyk test for now...'
-                // bat 'npm test'
+                echo 'Running Snyk security test...'
+                withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+                    bat 'snyk auth %SNYK_TOKEN%'
+                    bat 'snyk test'
+                }
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
-                // Add your deploy command here
+                // Add your deploy command here if needed
                 // bat 'npm run deploy'
             }
         }
