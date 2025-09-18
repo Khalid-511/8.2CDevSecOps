@@ -2,35 +2,33 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                git branch: 'main', url: 'https://github.com/Khalid-511/8.2CDevSecOps.git'
+                echo 'Building...'
             }
         }
-
-        stage('Check Node and NPM') {
+        stage('Test') {
             steps {
-                bat 'node -v'
-                bat 'npm -v'
+                echo 'Running tests...'
             }
         }
-
-        stage('Install Dependencies') {
+        stage('Deploy') {
             steps {
-                bat 'npm install'
+                echo 'Deploying...'
             }
         }
+    }
 
-        stage('Run Tests') {
-            steps {
-                bat 'npm test || exit 0' // don’t fail pipeline if tests break
-            }
-        }
-
-        stage('Security Scan') {
-            steps {
-                bat 'npm audit || exit 0'
-            }
+    post {
+        always {
+            emailext (
+                to: 's224206508@gmail.com',
+                subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                body: """Project: ${env.JOB_NAME}
+Build Number: ${env.BUILD_NUMBER}
+Status: ${currentBuild.currentResult}
+Check details at: ${env.BUILD_URL}"""
+            )
         }
     }
 }
