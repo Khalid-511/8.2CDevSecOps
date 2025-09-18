@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS-22"   // 👈 matches the name you configured in Jenkins
+        nodejs "NodeJS-22"   //   configured in Jenkins
     }
 
     stages {
