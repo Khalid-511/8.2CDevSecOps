@@ -1,20 +1,30 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "NodeJS-22"   // 👈 matches the name you configured in Jenkins
+    }
+
     stages {
         stage('Build') {
             steps {
-                echo 'Building...'
+                echo 'Installing dependencies...'
+                bat 'node -v'       // Check Node.js version
+                bat 'npm -v'        // Check npm version
+                bat 'npm install'   // Install project dependencies
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing...'
+                echo 'Running tests...'
+                bat 'npm test'      // Run your test script (if defined in package.json)
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
+                // Add your deploy command here, for example:
+                // bat 'npm run deploy'
             }
         }
     }
