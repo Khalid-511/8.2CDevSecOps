@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Running tests...'
+                echo 'Testing...'
             }
         }
         stage('Deploy') {
@@ -20,15 +20,15 @@ pipeline {
     }
 
     post {
-        always {
-            emailext (
-                to: 's224206508@gmail.com',
-                subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                body: """Project: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
-Status: ${currentBuild.currentResult}
-Check details at: ${env.BUILD_URL}"""
-            )
+        success {
+            mail to: 'khalidalotaibi011@gmail.com',
+                 subject: "SUCCESS: Jenkins Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "The Jenkins build for ${env.JOB_NAME} completed successfully.\nCheck console output at ${env.BUILD_URL}"
+        }
+        failure {
+            mail to: 'khalidalotaibi011@gmail.com',
+                 subject: "FAILURE: Jenkins Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "The Jenkins build for ${env.JOB_NAME} failed.\nCheck console output at ${env.BUILD_URL}"
         }
     }
 }
