@@ -24,7 +24,7 @@ pipeline {
                 success {
                     emailext(
                         subject: "SUCCESS: Tests Stage – ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """ The **Tests** stage succeeded for build ${env.BUILD_NUMBER}.  
+                        body: """✅ The **Tests** stage succeeded for build ${env.BUILD_NUMBER}.  
                               <br>See attached logs or <a href="${env.BUILD_URL}">View in Jenkins</a>.""",
                         to: 's224206508@gmail.com',
                         attachmentsPattern: 'test-stage.log'
@@ -33,7 +33,7 @@ pipeline {
                 failure {
                     emailext(
                         subject: "FAILURE: Tests Stage – ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """ The **Tests** stage failed for build ${env.BUILD_NUMBER}.  
+                        body: """❌ The **Tests** stage failed for build ${env.BUILD_NUMBER}.  
                               <br>See attached logs or <a href="${env.BUILD_URL}">View in Jenkins</a>.""",
                         to: 's224206508@gmail.com',
                         attachmentsPattern: 'test-stage.log'
@@ -57,7 +57,7 @@ pipeline {
                 success {
                     emailext(
                         subject: "SUCCESS: Security Scan – ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """ The **Security Scan** stage succeeded for build ${env.BUILD_NUMBER}.  
+                        body: """✅ The **Security Scan** stage succeeded for build ${env.BUILD_NUMBER}.  
                               <br>See attached logs or <a href="${env.BUILD_URL}">View in Jenkins</a>.""",
                         to: 's224206508@gmail.com',
                         attachmentsPattern: 'security-stage.log'
@@ -66,7 +66,7 @@ pipeline {
                 failure {
                     emailext(
                         subject: "FAILURE: Security Scan – ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """ The **Security Scan** stage failed for build ${env.BUILD_NUMBER}.  
+                        body: """❌ The **Security Scan** stage failed for build ${env.BUILD_NUMBER}.  
                               <br>See attached logs or <a href="${env.BUILD_URL}">View in Jenkins</a>.""",
                         to: 's224206508@gmail.com',
                         attachmentsPattern: 'security-stage.log'
